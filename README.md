@@ -29,7 +29,6 @@ Basado en los marcos de trabajo **ISO/IEC 27001** y **NIST CSF 2.0**, la mitigac
 * **Control de Red:** Configurar el Firewall perimetral e interno para bloquear escaneos masivos y limitar el acceso al puerto 445 (Samba) únicamente a las subredes de administración autorizadas.
 * **Gestión de Parches:** Actualizar urgentemente los servicios expuestos a versiones estables y soportadas para evitar el uso de *exploits* públicos ya conocidos.
 
-## Fase de Mitigación
 
 # 🛠️ Fase de Mitigación: Implementación de Firewall (IPTables) y Troubleshooting
 
