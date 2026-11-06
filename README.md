@@ -28,3 +28,33 @@ Basado en los marcos de trabajo **ISO/IEC 27001** y **NIST CSF 2.0**, la mitigac
 * **Reducción de la Superficie de Ataque (Hardening):** Deshabilitar inmediatamente servicios innecesarios o no cifrados como Telnet y FTP, forzando el uso de alternativas seguras como SSH (Puerto 22) con autenticación basada en llaves públicas, no en contraseñas.
 * **Control de Red:** Configurar el Firewall perimetral e interno para bloquear escaneos masivos y limitar el acceso al puerto 445 (Samba) únicamente a las subredes de administración autorizadas.
 * **Gestión de Parches:** Actualizar urgentemente los servicios expuestos a versiones estables y soportadas para evitar el uso de *exploits* públicos ya conocidos.
+
+## Fase de Mitigación
+
+# 🛠️ Fase de Mitigación: Implementación de Firewall (IPTables) y Troubleshooting
+
+Tras identificar el servicio crítico `vsftpd 2.3.4` en el puerto 21 como un vector de alto riesgo, se procedió a ejecutar el ciclo de respuesta ante incidentes para neutralizar la amenaza mediante técnicas de Hardening.
+
+## 🛡️ Acción de Control: Filtrado de Paquetes
+Ante la persistencia del servicio en el sistema objetivo, se implementó una regla de **IPTables** para descartar (*DROP*) todo el tráfico entrante destinado al puerto 21. Esta medida garantiza que, aunque el servicio se mantenga activo por dependencias del sistema, no sea accesible desde vectores externos, cumpliendo con el principio de **Mínimo Privilegio** y **Defensa en Profundidad**.
+
+**Comando de mitigación ejecutado:**
+`sudo iptables -A INPUT -p tcp --dport 21 -j DROP`
+
+---
+
+## ✅ Auditoría de Verificación (Post-Mitigación)
+Se realizó un escaneo de validación desde el nodo de seguridad (Kali Linux) para confirmar la efectividad de la regla de Firewall.
+
+El estado **filtered** reportado por Nmap confirma que el Firewall está interceptando y descartando las solicitudes de conexión, neutralizando exitosamente el vector de ataque por enumeración.
+
+---
+
+## 📝 Anexo: Notas del Proceso de Remediación (Troubleshooting)
+Un aspecto fundamental de este laboratorio fue la gestión de errores y la persistencia técnica. Durante la fase de remediación se documentaron los siguientes desafíos:
+
+1. **Persistencia del Servicio:** Intentos iniciales de detener el proceso mediante comandos de gestión de servicios (`init.d`) y terminación forzada (`pkill`) no resultaron en el cierre del puerto. Esto sugirió una configuración de super-servidor o reinicio automático, lo que llevó a optar por una solución a nivel de red (Firewall).
+2. **Corrección de Sintaxis y Protocolos:** Se documentó la importancia de la precisión técnica en la terminal. Errores de sintaxis iniciales permitieron validar los mensajes de error del sistema antes de alcanzar la configuración correcta del protocolo TCP.
+
+Este proceso de iteración demuestra la capacidad analítica necesaria en un entorno SOC para adaptar la respuesta ante incidentes cuando las medidas estándar no son suficientes. La implementación final de IPTables eleva la postura de seguridad del servidor conforme a los marcos estratégicos de **NIST CSF** e **ISO/IEC 27001**.
+
